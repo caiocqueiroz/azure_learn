@@ -1,21 +1,22 @@
 name: Azure Deploy
+
 on:
   push:
     branches:
       - main
-      - feature/*
-  workflow_dispatch: 
+      - 'feature/**'
+  workflow_dispatch:
+
 jobs:
-  checkout:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Repo Checkout
-      - uses: actions/checkout@v6
-      - uses: azure/login@v3
+        uses: actions/checkout@v6.0.2
+
+      - name: Azure Login
+        uses: azure/login@v3.0.0
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
-  
-  
-
-  
