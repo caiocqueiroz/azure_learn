@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import rateLimit from '@fastify/rate-limit';
 import { createReadStream, existsSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,6 +10,8 @@ const host = process.env.HOST ?? '0.0.0.0';
 const apiBaseUrl = process.env.API_GATEWAY_URL ?? 'http://localhost:8080';
 const root = join(fileURLToPath(new URL('.', import.meta.url)), 'dist');
 const contentTypes = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.json': 'application/json; charset=utf-8' };
+
+await app.register(rateLimit, { max: Number(process.env.RATE_LIMIT_MAX ?? 300), timeWindow: '1 minute' });
 
 app.get('/health', async () => ({ status: 'ok', service: 'frontend-web' }));
 app.all('/api/*', async (request, reply) => {
