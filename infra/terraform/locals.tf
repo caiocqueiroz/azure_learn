@@ -7,12 +7,12 @@ locals {
   }
 
   apps = {
-    frontend-web = merge(local.default_container, { port = 8080, ingress = "external", min_replicas = 1, dapr = false }, lookup(var.container_apps, "frontend-web", {}))
-    api-gateway = merge(local.default_container, { port = 8080, ingress = "internal", min_replicas = 0, dapr = var.enable_dapr }, lookup(var.container_apps, "api-gateway", {}))
-    task-service = merge(local.default_container, { port = 8080, ingress = "internal", min_replicas = 0, dapr = var.enable_dapr }, lookup(var.container_apps, "task-service", {}))
-    user-service = merge(local.default_container, { port = 8080, ingress = "internal", min_replicas = 0, dapr = var.enable_dapr }, lookup(var.container_apps, "user-service", {}))
-    notification-service = merge(local.default_container, { port = 8080, ingress = "internal", min_replicas = 0, dapr = var.enable_dapr }, lookup(var.container_apps, "notification-service", {}))
-    worker-service = merge(local.default_container, { port = 8080, ingress = "disabled", min_replicas = 0, dapr = false }, lookup(var.container_apps, "worker-service", {}))
+    frontend-web         = merge(local.default_container, { port = 8080, ingress = "external", min_replicas = 1, dapr = false }, try(var.container_apps["frontend-web"], {}))
+    api-gateway          = merge(local.default_container, { port = 8080, ingress = "internal", min_replicas = 0, dapr = var.enable_dapr }, try(var.container_apps["api-gateway"], {}))
+    task-service         = merge(local.default_container, { port = 8080, ingress = "internal", min_replicas = 0, dapr = var.enable_dapr }, try(var.container_apps["task-service"], {}))
+    user-service         = merge(local.default_container, { port = 8080, ingress = "internal", min_replicas = 0, dapr = var.enable_dapr }, try(var.container_apps["user-service"], {}))
+    notification-service = merge(local.default_container, { port = 8080, ingress = "internal", min_replicas = 0, dapr = var.enable_dapr }, try(var.container_apps["notification-service"], {}))
+    worker-service       = merge(local.default_container, { port = 8080, ingress = "disabled", min_replicas = 0, dapr = false }, try(var.container_apps["worker-service"], {}))
   }
 
   default_images = {

@@ -59,12 +59,12 @@ resource "azurerm_container_app" "this" {
       dynamic "liveness_probe" {
         for_each = try(var.probes.liveness, null) == null ? [] : [var.probes.liveness]
         content {
-          transport               = "HTTP"
-          port                    = var.port
-          path                    = liveness_probe.value.path
-          interval_seconds        = liveness_probe.value.interval_seconds
-          timeout                 = liveness_probe.value.timeout_seconds
-          initial_delay           = 10
+          transport        = "HTTP"
+          port             = var.port
+          path             = liveness_probe.value.path
+          interval_seconds = liveness_probe.value.interval_seconds
+          timeout          = liveness_probe.value.timeout_seconds
+          initial_delay    = 10
         }
       }
 
