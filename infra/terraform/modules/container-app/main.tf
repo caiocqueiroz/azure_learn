@@ -15,10 +15,10 @@ resource "azurerm_container_app" "this" {
   }
 
   dynamic "secret" {
-    for_each = var.secrets
+    for_each = toset(nonsensitive(keys(var.secrets)))
     content {
-      name  = secret.key
-      value = secret.value
+      name  = secret.value
+      value = var.secrets[secret.value]
     }
   }
 
@@ -49,10 +49,10 @@ resource "azurerm_container_app" "this" {
       }
 
       dynamic "env" {
-        for_each = var.secrets
+        for_each = toset(nonsensitive(keys(var.secrets)))
         content {
-          name        = upper(replace(env.key, "-", "_"))
-          secret_name = env.key
+          name        = upper(replace(env.value, "-", "_"))
+          secret_name = env.value
         }
       }
 
