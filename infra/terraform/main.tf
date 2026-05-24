@@ -64,7 +64,7 @@ module "container_apps" {
   dapr_app_id                  = each.key
   env_vars = merge(
     {
-      PORT = "8080"
+      PORT                         = "8080"
       TASKFLOW_API_KEY_SECRET_NAME = "taskflow-api-key"
     },
     each.key == "frontend-web" ? { API_GATEWAY_URL = local.internal_urls.api_gateway } : {},
@@ -77,7 +77,7 @@ module "container_apps" {
     taskflow-api-key = var.taskflow_api_key
   }
   probes = {
-    liveness = { path = "/health", interval_seconds = 30, timeout_seconds = 5 }
+    liveness  = { path = "/health", interval_seconds = 30, timeout_seconds = 5 }
     readiness = { path = "/health", interval_seconds = 10, timeout_seconds = 3 }
   }
 
