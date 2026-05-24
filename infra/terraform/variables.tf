@@ -3,6 +3,7 @@ variable "resource_group_name" { type = string }
 variable "environment_name" { type = string }
 variable "acr_name" { type = string }
 variable "image_tag" { type = string default = "latest" }
+variable "deploy_container_apps" { type = bool default = true }
 variable "log_analytics_workspace_name" { type = string default = "law-taskflow-study" }
 variable "container_apps" {
   description = "Per-service Container Apps sizing, scale and image overrides."

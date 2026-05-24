@@ -45,7 +45,7 @@ resource "azurerm_role_assignment" "acr_pull" {
 
 module "container_apps" {
   source   = "./modules/container-app"
-  for_each = local.apps
+  for_each = var.deploy_container_apps ? local.apps : {}
 
   name                         = each.key
   resource_group_name          = azurerm_resource_group.rg.name

@@ -1,0 +1,52 @@
+name: Bootstrap Terraform State
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: bootstrap-terraform-state
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    name: Create remote state storage
+    runs-on: ubuntu-latest
+    environment: azure-dev
+    steps:
+      - name: Azure login with OIDC
+        uses: azure/login@v3.0.0
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Create Terraform state backend
+        run: |
+          set -euo pipefail
+          az group create \
+            --name "${{ vars.TF_STATE_RESOURCE_GROUP }}" \
+            --location "${{ vars.AZURE_LOCATION }}"
+          az storage account create \
+            --name "${{ vars.TF_STATE_STORAGE_ACCOUNT }}" \
+            --resource-group "${{ vars.TF_STATE_RESOURCE_GROUP }}" \
+            --location "${{ vars.AZURE_LOCATION }}" \
+            --sku Standard_LRS \
+            --kind StorageV2 \
+            --min-tls-version TLS1_2 \
+            --allow-blob-public-access false
+          storage_scope="$(az storage account show \
+            --name "${{ vars.TF_STATE_STORAGE_ACCOUNT }}" \
+            --resource-group "${{ vars.TF_STATE_RESOURCE_GROUP }}" \
+            --query id -o tsv)"
+          az role assignment create \
+            --assignee "${{ vars.AZURE_CLIENT_ID }}" \
+            --role "Storage Blob Data Contributor" \
+            --scope "$storage_scope" || true
+          az storage container create \
+            --name "${{ vars.TF_STATE_CONTAINER }}" \
+            --account-name "${{ vars.TF_STATE_STORAGE_ACCOUNT }}" \
+            --auth-mode login

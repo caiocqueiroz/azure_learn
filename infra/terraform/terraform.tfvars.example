@@ -4,6 +4,7 @@ environment_name    = "cae-taskflow-study"
 acr_name            = "taskflowacrstudy001"
 image_tag           = "latest"
 enable_dapr         = true
+deploy_container_apps = true
 worker_interval_ms  = "10000"
 taskflow_api_key    = "replace-with-a-study-secret"
 
