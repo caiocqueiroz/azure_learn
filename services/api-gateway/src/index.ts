@@ -36,7 +36,7 @@ app.get('/api/notifications', async () => proxy(notificationServiceUrl, '/notifi
 app.setErrorHandler((error, _request, reply) => {
   const upstream = error as Error & { statusCode?: number; body?: unknown };
   app.log.error({ err: error, upstreamBody: upstream.body }, 'request failed');
-  reply.status(upstream.statusCode ?? 500).send(upstream.body ?? { error: error.message });
+  reply.status(upstream.statusCode ?? 500).send(upstream.body ?? { error: upstream.message });
 });
 
 await app.listen({ port, host });
