@@ -1,0 +1,64 @@
+services:
+  frontend-web:
+    build: ./frontend-web
+    image: taskflow/frontend-web:local
+    environment:
+      API_GATEWAY_URL: http://api-gateway:8080
+      PORT: 8080
+    ports:
+      - "3000:8080"
+    depends_on:
+      - api-gateway
+
+  api-gateway:
+    build: ./services/api-gateway
+    image: taskflow/api-gateway:local
+    environment:
+      TASK_SERVICE_URL: http://task-service:8080
+      USER_SERVICE_URL: http://user-service:8080
+      NOTIFICATION_SERVICE_URL: http://notification-service:8080
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - task-service
+      - user-service
+      - notification-service
+
+  task-service:
+    build: ./services/task-service
+    image: taskflow/task-service:local
+    environment:
+      NOTIFICATION_SERVICE_URL: http://notification-service:8080
+      USE_DAPR_PUBSUB: "false"
+      PORT: 8080
+    ports:
+      - "8081:8080"
+    depends_on:
+      - notification-service
+
+  user-service:
+    build: ./services/user-service
+    image: taskflow/user-service:local
+    environment:
+      PORT: 8080
+    ports:
+      - "8082:8080"
+
+  notification-service:
+    build: ./services/notification-service
+    image: taskflow/notification-service:local
+    environment:
+      PORT: 8080
+      MAX_NOTIFICATIONS: 50
+    ports:
+      - "8083:8080"
+
+  worker-service:
+    build: ./services/worker-service
+    image: taskflow/worker-service:local
+    environment:
+      PORT: 8080
+      WORKER_INTERVAL_MS: ${WORKER_INTERVAL_MS:-10000}
+    ports:
+      - "8084:8080"
