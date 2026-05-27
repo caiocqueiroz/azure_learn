@@ -5,3 +5,12 @@ infra/terraform/.terraform/
 infra/terraform/.terraform.lock.hcl
 infra/terraform/terraform.tfstate*
 infra/terraform/tfplan
+
+# Audio / transcript files
+audio/
+transcript/
+*.srt
+*.tsv
+*.txt
+*.vtt
+*.wav

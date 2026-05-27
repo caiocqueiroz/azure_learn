@@ -27,9 +27,9 @@ concurrency:
 env:
   TF_IN_AUTOMATION: 'true'
   ARM_USE_OIDC: 'true'
-  ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
-  ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
-  ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   TF_VAR_location: ${{ vars.AZURE_LOCATION }}
   TF_VAR_resource_group_name: ${{ vars.AZURE_RESOURCE_GROUP }}
   TF_VAR_environment_name: ${{ vars.ACA_ENVIRONMENT_NAME }}
@@ -53,9 +53,10 @@ jobs:
       - name: Azure login with OIDC
         uses: azure/login@v3.0.0
         with:
-          client-id: ${{ vars.AZURE_CLIENT_ID }}
-          tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          auth-type: OIDC
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3.1.2
