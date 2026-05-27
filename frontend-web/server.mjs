@@ -13,7 +13,7 @@ const root = join(fileURLToPath(new URL('.', import.meta.url)), 'dist');
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
 
 await app.register(rateLimit, { max: Number(process.env.RATE_LIMIT_MAX ?? 300), timeWindow: '1 minute' });
-await app.register(fastifyStatic, { root, prefix: '/', index: false });
+await app.register(fastifyStatic, { root, prefix: '/', index: 'index.html' });
 
 app.get('/health', async () => ({ status: 'ok', service: 'frontend-web' }));
 app.all('/api/*', async (request, reply) => {
