@@ -26,7 +26,7 @@ app.all('/api/*', async (request, reply) => {
   const body = await response.text();
   reply.status(response.status).type(response.headers.get('content-type') ?? 'application/json').send(body);
 });
-app.get('/*', async (_request, reply) => {
+app.setNotFoundHandler(async (_request, reply) => {
   reply.type('text/html; charset=utf-8').send(indexHtml);
 });
 
